@@ -1,0 +1,63 @@
+#:set curCOLOR .1, .4, .7, 1.
+#:set NULLcolor 0,0,0,0
+<EqnInput>:
+	background_active: ""
+	background_normal: ""
+	font_name: "font/freeserif.ttf"
+	font_size: 30
+	size: Window.width, 60
+	size_hint: None, None
+	multiline: False
+	cursor_color: .2, .3, .4, 1
+	cursor_width: 2
+	allow_copy: False
+	use_bubble: False
+	on_focus: self.cursor_color = curCOLOR if self.focus else NULLcolor
+	selection_color: 0,0,0,0
+	use_handles: False
+
+<TopLevelInfoButton@Button>:
+	size_hint_y: None
+	size_hint_x: 1
+	height: 60
+	markup: True
+	text: "[size=24][color=#aabbff]Enter your equation.\nClick on '+' to add another line.[/color][/size]"
+	#background_color: .4, .4, 1, 1
+	background_disabled: "res/bgdown.png"
+	pos_hint: {"x": .4}
+	disabled: True
+<Group>:
+	size_hint_y: None
+	height: 50
+	id: grp
+	Button:
+		id: eqnLabel
+		disabled: True
+		size_hint_x: None
+		width: grp.width/6
+		pos: grp.pos
+		background_color: .3, .4, .8, 1.
+		background_disabled: "res/eqbtndisabled.png"
+		markup: True
+
+	EqnInput:
+		size_hint_x: None
+		width: grp.width-eqnLabel.width
+		pos: eqnLabel.right, grp.y
+		height: eqnLabel.height
+		
+<EqnField>:
+	size_hint: None, None
+	orientation: "vertical"
+	rows: len(root.children)+1
+	cols: 1
+	spacing: 5
+	canvas.before:
+		Color:
+			rgba: .3, .3, .3, 1
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+#	Group
+#	Group

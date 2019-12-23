@@ -1,0 +1,214 @@
+#:set fontpath "font/FreeSerif.ttf"
+#:import Animation kivy.animation.Animation
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+#Special Buttons
+<Spbutton@Button>:
+	markup: True
+	font_name: fontpath
+	background_down: "res/txtbg.png"
+	on_press:
+		exec("try:app.current.insert_text(self.text)\nexcept:pass")
+
+<FuncBtn@Button>:
+	markup: True
+	font_name: fontpath
+	#I'm gonna use the same background for the textinput
+	background_down: "res/txtbg.png"
+#Letter buttons
+<Lbutton>:
+	background_down: "res/txtbg.png"
+	#text: self.text if app.getMain().ids.keyboard.ids.togbtn.state!="down" else self.text.upper()
+	on_press:
+		exec("\
+		try: app.current.insert_text(self.text)\n\
+		except: pass")
+<Keyboard>:
+	size_hint: None, None
+	size: Window.width, Window.height*.4
+	id: mngr
+	transition: NoTransition()
+	Screen:
+		name: "numbers"
+		BoxLayout:
+			id: box
+			orientation: "horizontal"
+			size: root.width, root.height*.9
+			size_hint: None, None
+			pos: 0,0
+			canvas.before:
+				Color:
+					rgba: .2, .3, .3, 1.
+				Rectangle:
+					size: root.size
+					pos: box.pos
+			GridLayout:
+				id: nums
+				rows: 4
+				cols: 3
+				Spbutton:
+					text: "1"
+				Spbutton:
+					text: "2"
+				Spbutton:
+					text: "3"
+				Spbutton:
+					text: "4"
+				Spbutton:
+					text: "5"
+				Spbutton:
+					text: "6"
+				Spbutton:
+					text: "7"
+				Spbutton:
+					text: "8"
+				Spbutton:
+					text: "9"
+				Spbutton:
+					text: "x"
+				Spbutton:
+					text: "0"
+				Spbutton:
+					text: "y"
+			GridLayout:
+				id: signs
+				rows: 3
+				cols: 3
+				FuncBtn:
+					text: "[size=27]+[/size]"
+					on_press: exec("try:app.current.insert_text('+')\nexcept:pass")
+				FuncBtn:
+					text: "[size=27]-[/size]"
+					on_press: exec("try:app.current.insert_text('-')\nexcept:pass")
+				FuncBtn:
+					text: "[color=#aaaaee][size=26]A[/size][/color]"
+					on_press: mngr.current = "alpha"
+				FuncBtn:
+					text: "[size=27].[/size]"
+					on_press: exec("try:app.current.insert_text('.')\nexcept:pass")
+				FuncBtn:
+					text: "[size=27]=[/size]"
+					on_press:
+						exec('try:app.current.insert_text("=")\nexcept: pass')
+				FuncBtn:
+					text: "\uF06E"
+					font_name: "font/materialdesignicons-webfont.ttf"
+					on_press:
+						exec('try:app.current.do_backspace()\nexcept:pass')
+						exec("try:\n\ttemp=app.current.text\n\tapp.current.text=''\n\tapp.current.insert_text(temp)\nexcept:pass")
+				Spbutton:
+					on_press: exec('try:app.current.insert_text(" ")\nexcept:pass')
+				FuncBtn:
+					text: "[size=26]←[/size]"
+					on_press: exec("try:app.current.do_cursor_movement('cursor_left')\nexcept:pass")
+				FuncBtn:
+					text: "[size=26]→[/size]"
+					on_press: exec("try:app.current.do_cursor_movement('cursor_right')\nexcept:pass")
+		FuncBtn:
+			id: toggle
+			text: "[size=25]↑↓[/size]"
+			size: root.width, root.height*.1
+			pos: root.x, root.top-self.height
+			size_hint: None, None
+			on_release:
+				Animation(y=-box.height if box.pos==[0,0] else 0, duration=.1).start(box)
+				Animation(y=0 if toggle.y!=0 else root.top-self.height, duration=.1).start(toggle)
+	Screen:
+		name: "alpha"
+		id: alpha
+		GridLayout:
+			id: group
+			rows: 4
+			cols: 8
+			size: box.size
+			size_hint: None, None
+			canvas.before:
+				Color:
+					rgba: .2, .3, .3, 1.
+				Rectangle:
+					size: root.size
+					pos: group.pos
+			Lbutton:
+				text: "a"
+			Lbutton:
+				text: "b"
+			Lbutton:
+				text: "c"
+			Lbutton:
+				text: "d"
+			Lbutton:
+				text: "e"
+			Lbutton:
+				text: "f"
+			Lbutton:
+				text: "g"
+			Lbutton:
+				text: "h"
+			Lbutton:
+				text: "i"
+			Lbutton:
+				text: "j"
+			Lbutton:
+				text: "k"
+			Lbutton:
+				text: "l"
+			Lbutton:
+				text: "m"
+			Lbutton:
+				text: "n"
+			Lbutton:
+				text: "o"
+			ToggleButton:
+				id: togbtn
+				text: "\uF736"
+				font_name: "font/materialdesignicons-webfont.ttf"
+				on_press: app.isUppercase = True if self.state=="down" else False
+			Lbutton:
+				text: "p"
+			Lbutton:
+				text: "q"
+			Lbutton:
+				text: "r"
+			Lbutton:
+				text: "s"
+			Lbutton:
+				text: "t"
+			Lbutton:
+				text: "u"
+			FuncBtn:
+				text: "←"
+				on_press: exec("try:app.current.do_cursor_movement('cursor_left')\nexcept:pass")
+			FuncBtn:
+				text: "→"
+				on_press: exec("try:app.current.do_cursor_movement('cursor_right')\nexcept:pass")
+			Lbutton:
+				text: "v"
+			Lbutton:
+				text: "w"
+			Lbutton:
+				id: btn
+				text: "x"
+			FuncBtn:
+				on_press: exec("try:app.current.insert_text(' ')\nexcept: pass")
+			FuncBtn:
+				on_press: exec("try:app.current.insert_text(' ')\nexcept: pass")
+			Lbutton:
+				text: "y"
+			Lbutton:
+				text: "z"
+			FuncBtn:
+				text: "[color=#aaaaee][size=26]123[/size][/color]"
+				on_press: mngr.current = "numbers"
+		#Button for toggling keyboard
+		FuncBtn:
+			id: toggle2
+			text: "[size=25]↑↓[/size]"
+			size: root.width, root.height*.1
+			pos: root.x, root.top-self.height
+			size_hint: None, None
+			on_press:
+				Animation(y=-group.height if group.pos==[0,0] else 0, duration=.1).start(group)
+				Animation(y=0 if toggle2.y!=0 else root.top-self.height, duration=.1).start(toggle2)
+
+		

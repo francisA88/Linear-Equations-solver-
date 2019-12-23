@@ -1,0 +1,116 @@
+#:import Window kivy.core.window.Window
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+#:import icons kivymd.icon_definitions.md_icons
+#:import Factory kivy.factory.Factory
+#:import TextInput kivy.uix.textinput.TextInput
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+#:set TEAL (0, 122/255, 111/255, 1.)
+#:set WHITE (1,1,1,1)
+#:set mdfont "font/materialdesignicons-webfont.ttf"
+
+<ExitRequest@MDDialog>:
+	text_button_ok: "Yes"
+	text_button_cancel: "Stay"
+	events_callback: lambda *args: exit() if args[0] == "Yes" else self.dismiss()
+	size_hint: .8, .3
+	title: "Exit"
+	text: "[size=28][color=#0000ee]Do you want to leave?[/color][/size]"
+	
+<ResultDisplay@MDDialog>:
+	title: "Results"
+	text_button_ok: "close"
+	size_hint: .65, .6
+	auto_dismiss: False
+	
+<IconButton@Button>:
+	font_name: mdfont
+	markup: True
+	font_size: 25
+
+<Main>:
+	transition: NoTransition()
+	Screen:
+		name: "main1"
+		id: mainScreen
+		NavigationLayout:
+			id: nLayout
+			size_hint: 1,1
+			MDNavigationDrawer:
+				id: drawer
+				#x: -self.size
+				drawer_logo: "res/drawerlogo.png"
+				NavigationDrawerIconButton:
+					icon: "book"
+					text: "[size=25]Examples[/size]"
+					on_press: root.current = "examples"
+			#	MD
+			BoxLayout:
+				id: box
+				orientation: "vertical"
+				size_hint: None, None
+				size: Window.width, Window.height*6
+				pos_hint: {"x":0, "top":1}
+				MDToolbar:
+					elevation: 5
+					title: "SLEqn"
+					left_action_items: [["menu",lambda arg: nLayout.toggle_nav_drawer()]]
+					right_action_items: [['dots-vertical', lambda x:None]]
+					#md_bg_color: 47/255, 47/255, 244/255, 1
+					md_bg_color: app.theme_cls.primary_color
+					#anchor_title: "center"
+				ScrollView:
+					id: container
+					size: box.size
+					effect_cls: ScrollEffect
+					bar_color: TEAL
+					EqnField:
+						id: ef
+						pos: container.pos
+						width: container.width
+						#height: 
+						size_hint_y: (Window.size[1]+2*self.children[1].height)+len(self.children)*self.children[1].height
+						#maximum_height: box.height
+				Widget:
+					BoxLayout:
+						size: Window.width*.125, Window.height*.15
+						pos: root.right-self.width, keyboard.pos[1]+keyboard.height
+						size_hint: None, None
+						orientation: "vertical"
+						IconButton:
+							text: icons["check"]
+							md_bg_color: .2, .4,.4, 1
+							on_press:
+								exec(open("solvescript.py").read())
+						IconButton:
+							text: icons["plus"]
+							on_press: ef.add_widget(Factory.Group())
+						IconButton:
+							text: icons["undo"]
+							on_press: exec('try:\n\tif len(ef.children)>3: ef.remove_widget(ef.children[0])\nexcept:pass')
+					Keyboard:
+						id: keyboard
+	Screen:
+		name: "examples"
+		BoxLayout:
+			orientation: "vertical"
+			MDToolbar:
+				title: "Examples"
+				md_bg_color: app.theme_cls.primary_color
+				left_action_items: [["arrow-left", lambda x: exec('root.current="main1"')]]
+				elevation: 7
+			ScrollView:
+				MDList:
+					OneLineListItem:
+						text: "Two variables"
+						var: 2
+						on_touch_up:
+							exec(open("exInsert.py").read())
+							root.current = "main1"
+					OneLineListItem:
+						text: "Three variables"
+						var: 3
+						on_touch_up:
+							exec(open("exInsert.py").read())
+							root.current = "main1"
+#ripple_color', 'ripple_duration_in_fast', 'ripple_duration_in_slow', 'ripple_duration_out', 'ripple_func_in', 'ripple_func_out', 'ripple_post', 'ripple_rad', 'ripple_rad_default',		
