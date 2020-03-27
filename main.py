@@ -10,7 +10,6 @@
 
 #In case I forget, remove these next two lines
 import sys
-sys.path.append("/storage/4251-1617/site-packages")
 import string
 from copy import deepcopy
 
